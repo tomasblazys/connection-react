@@ -2,36 +2,53 @@ import React from "react";
 import {useState} from "react"
 import {useEffect} from "react"
 
-//Table rows elementu template
 
-function createRow(input){
-  
-  return (
-    <tr key = {input.ak} className="clickable" >          
-    <td>{input.ak}</td>
-    <td>{input.fname}</td>
-    <td>{input.lname}</td>      
-   </tr>
-  );
+
+
+function TableData(props){
+
+  let handleClick =  async (input) => {
+    let detailsData = [];
+    try {
+      let res = await fetch("http://localhost:3001/details", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({input}), 
+      });
+    detailsData = await res.json()
+    props.setDetails(detailsData)
+    props.setDetailsTrigger(true)
+    } catch (err) {
+      
+    }
 }
 
-//Fetchina json ir sukuria lentele
+  function createRow(input){
+    return (
+      <tr key = {input.ak} onClick={() => handleClick(input.ak)}  className="clickable" >          
+      <td>{input.ak}</td>
+      <td>{input.fname}</td>
+      <td>{input.lname}</td>      
+     </tr>
+    );
+  }
 
-function TableData(){
-  const [data, setData] = useState([]);
+
   useEffect(() => {
       async function fetchMyApi() {
         let res = await fetch("http://localhost:3001/api")
         res = await res.json()
-        setData(res)
+        props.setData(res)
       }
       fetchMyApi()
     }, []);
   
     return (
-       data.map(createRow)
+       props.data.map(createRow)
     );
 }
+
+
 
 
 export default TableData;

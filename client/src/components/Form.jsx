@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from "react";
 
-function Form() {
+function Form(props) {
 
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
@@ -13,19 +13,24 @@ function Form() {
 
   let handleSubmit = async (e) => {
     e.preventDefault();
+    let newData = {
+      fname : fname,
+      lname : lname,
+      ak : ak,
+      email: email,
+      age : age
+    }
+
     try {
       let res = await fetch("http://localhost:3001/form", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          fname : fname,
-          lname : lname,
-          ak : ak,
-          email: email,
-          age : age
-        }), 
+        body: JSON.stringify(newData), 
       });
       let resJson = await res;
+      let oldData = props.data 
+      let newArray = oldData.concat(newData);
+      
       if (res.status === 200) {
         setFname("");
         setLname("");
@@ -33,6 +38,7 @@ function Form() {
         setEmail("");
         setAge("");
         setMessage("Įrašas sukurtas sėkmingai");
+        props.setData(newArray)
       } else if (res.status === 401) {
         setMessage("Įrašas nepavyko. Toks AK jau egzistuoja!");
       } else {

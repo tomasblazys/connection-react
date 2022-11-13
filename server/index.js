@@ -23,7 +23,6 @@ app.use(express.json());
 app.get("/api", (req, res) => {
   let data = fs.readFileSync(__dirname + '/data.json');
   let parsedData = JSON.parse(data);
-  console.log(parsedData);
   res.json(parsedData);
 });
 
@@ -47,6 +46,26 @@ app.post("/form", function(req, res) {
   res.sendStatus(200);;
      });
    };
+});
+
+app.post("/details", function(req, res) {
+
+  let newData = req.body.input;
+  let dataFull = fs.readFileSync(__dirname + '/data.json');
+  let parsedData = JSON.parse(dataFull);
+  //------search for match
+   let index = -1;
+   for (var i = 0; i < parsedData.length; i++) {
+     if (Object.values(parsedData[i]).indexOf(newData) > (-1)) {
+       index = i;
+     i = parsedData.length;
+     }
+
+   };
+   var foundData = parsedData[index];
+   const jsonContent = JSON.stringify(foundData);
+   res.end(jsonContent);
+
 });
 
 

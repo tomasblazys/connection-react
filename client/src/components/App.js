@@ -1,36 +1,30 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import CreateTable from "./FullTable"
+import FullTable from "./FullTable"
 import Popup from "./Popup"
 import {useState} from "react"
-import {useEffect} from "react"
 import Form from "./Form"
+import Details from "./Details"
 
 function App() {
 
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch("http://localhost:3001/api")
-      .then((res) => res.json())
-      .then((data) => setData(data[0].fname));
-  }, []);
-   
-
-
   const [buttonPopup, setButtonPopup] = useState(false)
+  const [data, setData] = useState([]);
+  const [dataDetails, setDetails] = useState("")
   
-  return (
+  return (  
     <div>
-      <Header />
-      <CreateTable />
+      <Header /> 
+      <Details dataDetails={dataDetails} setDetails={setDetails}/>
+      <FullTable data={data} setData={setData} dataDetails={dataDetails} setDetails={setDetails}/> 
       <button className="new-btn"onClick={() => setButtonPopup(true)}>Naujas įrašas</button> 
       <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
         <h2>Sukurti naują įrašą</h2>
-        <Form />
+        <Form data={data} setData={setData}/>
       </Popup>
-      <Footer />
+         
+      <Footer /> 
     </div>    
   );
 }
